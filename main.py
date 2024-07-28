@@ -11,17 +11,15 @@ def main():
     soup = BeautifulSoup(req.text, "html.parser")
     soup = soup.find_all("div", {"class": "programma__content"})[0]
 
-    main_section_titles = find_h_element(soup, "h3", {"class", "mandatory"})
+    main_section_titles = find_element(soup, "h3", {"class", "mandatory"})
 
-    tables = soup.find_all("table")
-
-    for table in tables:
-        rows = table.find_all("tr")
-        print(rows)
-        input()
+    lis = soup.find_all("li", {"class", "lilevel_2"})
+    for li in lis:
+        titles = find_element(li, "h4", {"class", "mandatory"})
+        print(titles)
 
 
-def find_h_element(soup, h_element: str, args: dict):
+def find_element(soup, h_element: str, args: dict):
     """
     This function searches for specific <h> tags in the soup and returns their values as a list.
     """
