@@ -9,18 +9,16 @@ def main():
     )
 
     soup = BeautifulSoup(req.text, "html.parser")
-    content = soup.find_all("div", {"class": "programma__content"})[0]
+    soup = soup.find_all("div", {"class": "programma__content"})[0]
 
-    main_section_titles = find_h_element(content, "h3", {"class", "mandatory"})
+    main_section_titles = find_h_element(soup, "h3", {"class", "mandatory"})
 
-    print(main_section_titles)
+    tables = soup.find_all("table")
 
-    # sub_section_titles = find_h_element(content, "h4", {"class", "mandatory"})
-    # print(sub_section_titles)
-    li = content.select(
-        'li:has(h3:-soup-contains("Reorientation Package")) > div > ul'
-    )[1]
-    print(li)
+    for table in tables:
+        rows = table.find_all("tr")
+        print(rows)
+        input()
 
 
 def find_h_element(soup, h_element: str, args: dict):
