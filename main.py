@@ -1,36 +1,33 @@
 from bs4 import BeautifulSoup
-import requests
+import requests, itertools
 
 
 def main():
     req = requests.get(
         "https://onderwijsaanbod.kuleuven.be/opleidingen/e/SC_51016883.htm"
-        # "https://onderwijsaanbod.kuleuven.be/opleidingen/n/SC_50527959.htm"
+        # "https://onderwijsaanbod.kuleuven.be/opleidingen/n/SC_51016775.htm"
     )
 
     soup = BeautifulSoup(req.text, "html.parser")
     soup = soup.find_all("div", {"class": "programma__content"})[0]
 
-    main_section_titles = find_element(soup, "h3", {"class", "mandatory"})
-
     lis_level2 = soup.find_all("li", {"class", "lilevel_2"})
-    titles_level2 = []
-    for li in lis_level2:
-        title_mandatory = find_element(li, "h4", {"class", "mandatory"})
-        if title_mandatory:
-            titles_level2.append(title_mandatory)
-        title_optional = find_element(li, "h4", {"class", "optional"})
-        if title_optional:
-            titles_level2.append(title_optional)
-    print(titles_level2)
+    courses_map = {}
+    for li2 in lis_level2:
+        lis_level3 = li2.find_all("li", {"class", "lilevel_3"})
+        for li in lis_level3:
+            title_mandatory = find_element(li, "h4", {"class", "mandatory"})
+            title_optional = find_element(li, "h4", {"class", "optional"})
+            course_name = find_element(li, "td", {"class", "opleidingsonderdeel"})
+            # if course_name:
+            if title_mandatory:
+                courses_map[title_mandatory[0]] = course_name
+            if title_optional:
+                courses_map[title_optional[0]] = course_name
 
-    lis_level3 = soup.find_all("li", {"class", "lilevel_3"})
-    titles_level3 = []
-    for li in lis_level3:
-        course_name = find_element(li, "td", {"class", "opleidingsonderdeel"})
-        if course_name:
-            titles_level3.append(course_name)
-    print(titles_level3)
+
+def get_timeslots(course_name: str):
+    pass
 
 
 def find_element(soup, h_element: str, args: dict):
